@@ -1,11 +1,8 @@
 // ============================================================
 //  JOGO DA FORCA - Versão Deluxe
 //  Desenvolvido em Processing
-//  Funcionalidades: múltiplos temas, dicas, pontuação,
-//  animações, efeitos visuais, recordes e muito mais!
 // ============================================================
 
-// --- Importações de fontes e controle ---
 PFont fonteTitulo, fonteTexto, fonteGrande, fontePequena;
 
 // --- Estados do jogo ---
@@ -22,25 +19,25 @@ int estadoAtual = TELA_MENU;
 String palavraSecreta   = "";
 String palavraDica      = "";
 char[] letrasReveladas;
-ArrayList<Character> letrasErradas = new ArrayList<Character>();
+ArrayList<Character> letrasErradas  = new ArrayList<Character>();
 ArrayList<Character> letrasCorretas = new ArrayList<Character>();
 int erros = 0;
 final int MAX_ERROS = 6;
 int temaSelecionado = 0;
 int pontuacao = 0;
-int recorde = 0;
-int rodada = 1;
+int recorde   = 0;
+int rodada    = 1;
 boolean usouDica = false;
 int tempoInicio;
 int tempoFinal;
 
 // --- Animações ---
-float[] particulas_x = new float[60];
-float[] particulas_y = new float[60];
-float[] particulas_vy = new float[60];
-float[] particulas_vx = new float[60];
+float[] particulas_x     = new float[60];
+float[] particulas_y     = new float[60];
+float[] particulas_vy    = new float[60];
+float[] particulas_vx    = new float[60];
 float[] particulas_alpha = new float[60];
-color[] particulas_cor = new color[60];
+color[] particulas_cor   = new color[60];
 boolean mostrarParticulas = false;
 int timerParticulas = 0;
 
@@ -53,34 +50,26 @@ boolean fadeIn = false;
 
 // --- Botões ---
 Botao[] botoesTema;
-Botao btnDica, btnMenu, btnProxima, btnRecorde, btnJogarNovamente;
-Botao[] botoesLetras = new Botao[26];
-
-// --- Teclado visual ---
-boolean mostrarTeclado = true;
+Botao btnDica, btnMenu, btnProxima, btnJogarNovamente;
 
 // --- Cores do tema ---
-color COR_FUNDO      = color(15, 20, 35);
-color COR_MADEIRA    = color(101, 67, 33);
-color COR_MADEIRA2   = color(139, 90, 43);
-color COR_CORDA      = color(210, 180, 140);
-color COR_BONECO     = color(240, 200, 150);
-color COR_DESTAQUE   = color(255, 200, 50);
-color COR_ERRO       = color(220, 60, 60);
-color COR_ACERTO     = color(80, 200, 120);
-color COR_TEXTO      = color(230, 225, 210);
-color COR_SOMBRA     = color(0, 0, 0, 100);
+color COR_FUNDO    = color(15, 20, 35);
+color COR_MADEIRA2 = color(139, 90, 43);
+color COR_CORDA    = color(210, 180, 140);
+color COR_BONECO   = color(240, 200, 150);
+color COR_DESTAQUE = color(255, 200, 50);
+color COR_ERRO     = color(220, 60, 60);
+color COR_ACERTO   = color(80, 200, 120);
+color COR_TEXTO    = color(230, 225, 210);
 
 // ============================================================
 void setup() {
   size(900, 600);
   smooth(4);
-
-  fonteTitulo = createFont("Georgia-Bold", 48);
-  fonteTexto  = createFont("Georgia", 22);
-  fonteGrande = createFont("Courier-Bold", 36);
+  fonteTitulo  = createFont("Georgia-Bold", 48);
+  fonteTexto   = createFont("Georgia", 22);
+  fonteGrande  = createFont("Courier-Bold", 36);
   fontePequena = createFont("Georgia", 14);
-
   inicializarBotoes();
   inicializarParticulas();
   fadeIn = true;
@@ -91,7 +80,6 @@ void setup() {
 void draw() {
   background(COR_FUNDO);
   desenharFundo();
-
   switch (estadoAtual) {
     case TELA_MENU:    desenharMenu();    break;
     case TELA_TEMA:    desenharTema();    break;
@@ -100,7 +88,6 @@ void draw() {
     case TELA_DERROTA: desenharDerrota(); break;
     case TELA_RECORDE: desenharRecorde(); break;
   }
-
   atualizarParticulas();
   atualizarSacudir();
   atualizarFade();
@@ -110,15 +97,12 @@ void draw() {
 //  FUNDO DECORATIVO
 // ============================================================
 void desenharFundo() {
-  // Gradiente sutil no topo
   for (int i = 0; i < height / 2; i++) {
     float alpha = map(i, 0, height / 2, 40, 0);
     stroke(100, 120, 180, alpha);
     line(0, i, width, i);
   }
   noStroke();
-
-  // Estrelas decorativas
   randomSeed(42);
   fill(255, 255, 255, 30);
   for (int i = 0; i < 80; i++) {
@@ -133,40 +117,24 @@ void desenharFundo() {
 //  TELA MENU
 // ============================================================
 void desenharMenu() {
-  // Título com sombra
   textFont(fonteTitulo);
   textAlign(CENTER, CENTER);
-
-  // Sombra
   fill(0, 0, 0, 120);
   text("JOGO DA FORCA", width/2 + 3, 90 + 3);
-
-  // Gradiente no título (simulado em duas cores)
   fill(COR_DESTAQUE);
   text("JOGO DA FORCA", width/2, 90);
-
-  // Subtítulo
   textFont(fonteTexto);
   fill(COR_TEXTO);
-  text("Edição Deluxe", width/2, 135);
-
-  // Boneco decorativo no menu
+  text("Edicao Deluxe", width/2, 135);
   desenharBonecoMenu();
-
-  // Botões
-  Botao btnJogar = new Botao(width/2 - 120, 370, 240, 55, "▶  JOGAR", COR_ACERTO, color(255));
+  Botao btnJogar = new Botao(width/2 - 120, 370, 240, 55, "JOGAR", COR_ACERTO, color(255));
   btnJogar.desenhar();
-
-  Botao btnRec = new Botao(width/2 - 120, 440, 240, 55, "🏆  RECORDES", COR_DESTAQUE, color(20, 20, 20));
+  Botao btnRec = new Botao(width/2 - 120, 440, 240, 55, "RECORDES", COR_DESTAQUE, color(20, 20, 20));
   btnRec.desenhar();
-
-  // Instruções
   textFont(fontePequena);
   fill(COR_TEXTO);
   text("Adivinhe a palavra antes que o boneco seja enforcado!", width/2, 520);
-  text("Você tem 6 tentativas. Use dicas com sabedoria!", width/2, 540);
-
-  // Versão
+  text("Voce tem 6 tentativas. Use dicas com sabedoria!", width/2, 540);
   textAlign(RIGHT, BOTTOM);
   fill(COR_TEXTO);
   text("v1.0 Deluxe", width - 20, height - 10);
@@ -177,18 +145,13 @@ void desenharBonecoMenu() {
   translate(width/2, 270);
   scale(0.8);
   desenharForca();
-  // Boneco completo de exemplo
   stroke(COR_BONECO);
   strokeWeight(4);
   fill(COR_BONECO);
-  // Cabeça
   ellipse(0, -140, 40, 40);
-  // Corpo
   line(0, -120, 0, -60);
-  // Braços (levantados em comemoração)
   line(0, -110, -40, -130);
   line(0, -110, 40, -130);
-  // Pernas
   line(0, -60, -25, -20);
   line(0, -60, 25, -20);
   noStroke();
@@ -203,15 +166,10 @@ void desenharTema() {
   textAlign(CENTER, CENTER);
   fill(COR_DESTAQUE);
   text("ESCOLHA O TEMA", width/2, 80);
-
   textFont(fonteTexto);
   fill(COR_TEXTO);
   text("Selecione uma categoria de palavras:", width/2, 125);
-
-  for (Botao b : botoesTema) {
-    b.desenhar();
-  }
-
+  for (Botao b : botoesTema) b.desenhar();
   btnMenu.desenhar();
 }
 
@@ -220,107 +178,70 @@ void desenharTema() {
 // ============================================================
 void desenharJogo() {
   float ox = sacudindo ? sacudirX : 0;
-
-  // Painel esquerdo - forca
   desenharPainelForca(ox);
-
-  // Painel direito - letras e info
   desenharPainelDireito(ox);
-
-  // Teclado virtual
-  if (mostrarTeclado) {
-    desenharTeclado(ox);
-  }
-
-  // Partículas
-  if (mostrarParticulas) {
-    desenharParticulas();
-  }
+  desenharTeclado(ox);
+  if (mostrarParticulas) desenharParticulas();
 }
 
 void desenharPainelForca(float ox) {
   pushMatrix();
   translate(ox, 0);
-
-  // Área da forca
   fill(30, 40, 60, 180);
   noStroke();
   rect(20, 20, 370, 340, 15);
-
-  // Borda decorativa
   stroke(COR_DESTAQUE);
   strokeWeight(1.5);
   noFill();
   rect(20, 20, 370, 340, 15);
   noStroke();
-
-  // Tema atual
   textFont(fontePequena);
   textAlign(LEFT, TOP);
   fill(COR_DESTAQUE);
   text("TEMA: " + Temas.getNomeTema(temaSelecionado).toUpperCase(), 35, 32);
-
-  // Rodada e pontuação
   textAlign(RIGHT, TOP);
   fill(COR_TEXTO);
   text("Rodada " + rodada, 375, 32);
-
-  // Forca centralizada
   pushMatrix();
   translate(205, 200);
   desenharForca();
   desenharBoneco(erros);
   popMatrix();
-
-  // Contador de erros
   textFont(fonteTexto);
   textAlign(CENTER, CENTER);
   if (erros >= 4) fill(COR_ERRO);
   else if (erros >= 2) fill(COR_DESTAQUE);
   else fill(COR_TEXTO);
   text(erros + " / " + MAX_ERROS + " erros", 205, 350);
-
   popMatrix();
 }
 
 void desenharPainelDireito(float ox) {
   pushMatrix();
   translate(ox, 0);
-
-  // Área info
   fill(30, 40, 60, 180);
   noStroke();
   rect(405, 20, 475, 200, 15);
-
   stroke(COR_DESTAQUE);
   strokeWeight(1.5);
   noFill();
   rect(405, 20, 475, 200, 15);
   noStroke();
-
-  // Pontuação
   textFont(fontePequena);
   textAlign(LEFT, TOP);
   fill(COR_DESTAQUE);
-  text("PONTUAÇÃO", 420, 35);
+  text("PONTUACAO", 420, 35);
   textFont(fonteGrande);
   fill(COR_TEXTO);
   text(nf(pontuacao, 5), 420, 55);
-
-  // Recorde
   textFont(fontePequena);
   fill(color(200, 170, 80));
-  text("🏆 Recorde: " + nf(recorde, 5), 420, 100);
-
-  // Tempo
+  text("Recorde: " + nf(recorde, 5), 420, 100);
   int tempoDecorrido = (millis() - tempoInicio) / 1000;
   int min = tempoDecorrido / 60;
   int seg = tempoDecorrido % 60;
   fill(COR_TEXTO);
-  text("⏱ " + nf(min, 2) + ":" + nf(seg, 2), 420, 120);
-
-  // Letras erradas
-  textFont(fontePequena);
+  text("Tempo: " + nf(min, 2) + ":" + nf(seg, 2), 420, 120);
   fill(COR_ERRO);
   text("Letras erradas:", 420, 150);
   String erradasStr = "";
@@ -328,8 +249,6 @@ void desenharPainelDireito(float ox) {
   textFont(fonteTexto);
   fill(COR_ERRO);
   text(erradasStr.isEmpty() ? "-" : erradasStr, 420, 170);
-
-  // Dica
   btnDica.desenhar();
   if (usouDica) {
     textFont(fontePequena);
@@ -337,10 +256,7 @@ void desenharPainelDireito(float ox) {
     textAlign(LEFT, TOP);
     text("Dica: " + palavraDica, 420, 225);
   }
-
-  // Palavra (espaços e letras)
   desenharPalavra(ox);
-
   popMatrix();
 }
 
@@ -350,21 +266,14 @@ void desenharPalavra(float ox) {
   int totalLargura = n * espacoLetra;
   int startX = 405 + (475 - totalLargura) / 2;
   int y = 340;
-
   for (int i = 0; i < n; i++) {
     char c = palavraSecreta.charAt(i);
     int lx = startX + i * espacoLetra;
-
-    if (c == ' ') {
-      // Espaço – nenhuma linha
-    } else {
-      // Linha da letra
+    if (c != ' ') {
       stroke(COR_CORDA);
       strokeWeight(2);
       line(lx, y + 5, lx + 28, y + 5);
       noStroke();
-
-      // Letra revelada
       if (letrasReveladas[i] != '_') {
         textFont(fonteGrande);
         textAlign(CENTER, BOTTOM);
@@ -373,8 +282,6 @@ void desenharPalavra(float ox) {
       }
     }
   }
-
-  // Número de letras
   textFont(fontePequena);
   textAlign(CENTER, TOP);
   fill(COR_TEXTO);
@@ -390,8 +297,6 @@ void desenharTeclado(float ox) {
   int idx = 0;
   int bw = 44, bh = 38, gap = 4;
   int ky = 380;
-
-  // Fundo teclado
   fill(20, 30, 50, 200);
   noStroke();
   rect(15 + ox, 370, 870, 200, 12);
@@ -400,50 +305,43 @@ void desenharTeclado(float ox) {
   noFill();
   rect(15 + ox, 370, 870, 200, 12);
   noStroke();
-
   for (int linha = 0; linha < 3; linha++) {
     int tam = tamLinhas[linha];
     int totalW = tam * (bw + gap) - gap;
     int kx = (int)(width - totalW) / 2 + (int)ox;
-
     for (int col = 0; col < tam && idx < 26; col++) {
       char letra = linhas.charAt(idx);
-      boolean errou = letrasErradas.contains(letra);
+      boolean errou   = letrasErradas.contains(letra);
       boolean acertou = letrasCorretas.contains(letra);
-
-      color fundo, borda, texto;
+      color fundo, borda, textoC;
       if (errou) {
-        fundo = color(80, 20, 20);
-        borda = COR_ERRO;
-        texto = color(150, 60, 60);
+        fundo  = color(80, 20, 20);
+        borda  = COR_ERRO;
+        textoC = color(150, 60, 60);
       } else if (acertou) {
-        fundo = color(20, 70, 40);
-        borda = COR_ACERTO;
-        texto = COR_ACERTO;
+        fundo  = color(20, 70, 40);
+        borda  = COR_ACERTO;
+        textoC = COR_ACERTO;
       } else {
-        fundo = color(40, 55, 80);
-        borda = color(80, 100, 140);
-        texto = COR_TEXTO;
-        // Hover
-        if (mouseX > kx + col*(bw+gap) && mouseX < kx + col*(bw+gap) + bw &&
-            mouseY > ky && mouseY < ky + bh) {
+        fundo  = color(40, 55, 80);
+        borda  = color(80, 100, 140);
+        textoC = COR_TEXTO;
+        int bx2 = kx + col * (bw + gap);
+        if (mouseX > bx2 && mouseX < bx2 + bw && mouseY > ky && mouseY < ky + bh) {
           fundo = color(60, 80, 120);
           borda = COR_DESTAQUE;
         }
       }
-
       int bx = kx + col * (bw + gap);
       fill(fundo);
       stroke(borda);
       strokeWeight(1.5);
       rect(bx, ky, bw, bh, 6);
       noStroke();
-
       textFont(fonteTexto);
       textAlign(CENTER, CENTER);
-      fill(errou || acertou ? texto : COR_TEXTO);
+      fill(textoC);
       text(letra, bx + bw/2, ky + bh/2);
-
       idx++;
     }
     ky += bh + gap + 2;
@@ -456,16 +354,11 @@ void desenharTeclado(float ox) {
 void desenharForca() {
   stroke(COR_MADEIRA2);
   strokeWeight(10);
-  // Base
   line(-80, 150, 80, 150);
-  // Poste vertical
   line(-40, 150, -40, -150);
-  // Viga horizontal
   line(-40, -150, 30, -150);
-  // Suporte diagonal
   strokeWeight(6);
   line(-40, -110, -10, -150);
-  // Corda
   stroke(COR_CORDA);
   strokeWeight(4);
   line(30, -150, 30, -120);
@@ -475,22 +368,18 @@ void desenharForca() {
 // ============================================================
 //  BONECO
 // ============================================================
-void desenharBoneco(int erros) {
+void desenharBoneco(int e) {
   stroke(COR_BONECO);
   strokeWeight(4);
   noFill();
-
-  if (erros >= 1) { // Cabeça
+  if (e >= 1) {
     fill(COR_BONECO);
     ellipse(30, -100, 40, 40);
     noFill();
-    // Olhos
-    if (erros >= MAX_ERROS) {
+    if (e >= MAX_ERROS) {
       stroke(COR_ERRO);
-      // X nos olhos
       line(22, -107, 26, -103); line(26, -107, 22, -103);
       line(34, -107, 38, -103); line(38, -107, 34, -103);
-      // Boca triste
       arc(30, -95, 16, 10, 0, PI);
     } else {
       stroke(color(50, 30, 20));
@@ -499,21 +388,11 @@ void desenharBoneco(int erros) {
     }
     stroke(COR_BONECO);
   }
-  if (erros >= 2) { // Corpo
-    line(30, -80, 30, -30);
-  }
-  if (erros >= 3) { // Braço esquerdo
-    line(30, -65, 0, -45);
-  }
-  if (erros >= 4) { // Braço direito
-    line(30, -65, 60, -45);
-  }
-  if (erros >= 5) { // Perna esquerda
-    line(30, -30, 5, 10);
-  }
-  if (erros >= 6) { // Perna direita
-    line(30, -30, 55, 10);
-  }
+  if (e >= 2) line(30, -80, 30, -30);
+  if (e >= 3) line(30, -65,  0, -45);
+  if (e >= 4) line(30, -65, 60, -45);
+  if (e >= 5) line(30, -30,  5,  10);
+  if (e >= 6) line(30, -30, 55,  10);
   noStroke();
 }
 
@@ -521,34 +400,25 @@ void desenharBoneco(int erros) {
 //  TELA VITÓRIA
 // ============================================================
 void desenharVitoria() {
-  // Título
   textFont(fonteTitulo);
   textAlign(CENTER, CENTER);
   fill(COR_ACERTO);
-  text("🎉 PARABÉNS! 🎉", width/2, 100);
-
+  text("PARABENS!", width/2, 100);
   textFont(fonteTexto);
   fill(COR_TEXTO);
-  text("Você adivinhou a palavra!", width/2, 150);
-
-  // Palavra
+  text("Voce adivinhou a palavra!", width/2, 150);
   textFont(fonteGrande);
   fill(COR_DESTAQUE);
   text(palavraSecreta, width/2, 200);
-
-  // Estatísticas
   textFont(fonteTexto);
   fill(COR_TEXTO);
   text("Erros: " + erros + " | Tempo: " + formatarTempo(tempoFinal) + " | Pontos: +" + calcularPontos(), width/2, 250);
-  text("Pontuação total: " + pontuacao, width/2, 285);
-
+  text("Pontuacao total: " + pontuacao, width/2, 285);
   if (pontuacao >= recorde && rodada > 1) {
     fill(COR_DESTAQUE);
-    text("🏆 NOVO RECORDE!", width/2, 320);
+    text("NOVO RECORDE!", width/2, 320);
   }
-
   desenharParticulas();
-
   btnProxima.desenhar();
   btnMenu.desenhar();
 }
@@ -560,28 +430,22 @@ void desenharDerrota() {
   textFont(fonteTitulo);
   textAlign(CENTER, CENTER);
   fill(COR_ERRO);
-  text("💀 GAME OVER 💀", width/2, 90);
-
+  text("GAME OVER", width/2, 90);
   textFont(fonteTexto);
   fill(COR_TEXTO);
   text("A palavra era:", width/2, 145);
-
   textFont(fonteGrande);
   fill(COR_DESTAQUE);
   text(palavraSecreta, width/2, 185);
-
-  // Boneco morto
   pushMatrix();
   translate(width/2, 310);
   scale(0.9);
   desenharForca();
   desenharBoneco(MAX_ERROS);
   popMatrix();
-
   textFont(fonteTexto);
   fill(COR_TEXTO);
-  text("Pontuação final: " + pontuacao, width/2, 460);
-
+  text("Pontuacao final: " + pontuacao, width/2, 460);
   btnJogarNovamente.desenhar();
   btnMenu.desenhar();
 }
@@ -593,17 +457,13 @@ void desenharRecorde() {
   textFont(fonteTitulo);
   textAlign(CENTER, CENTER);
   fill(COR_DESTAQUE);
-  text("🏆 RECORDES", width/2, 90);
-
+  text("RECORDES", width/2, 90);
   textFont(fonteTexto);
   fill(COR_TEXTO);
-  text("Sua melhor pontuação:", width/2, 160);
-
+  text("Sua melhor pontuacao:", width/2, 160);
   textFont(fonteGrande);
   fill(COR_DESTAQUE);
   text(nf(recorde, 5), width/2, 210);
-
-  // Tabela de temas
   String[] nomes = Temas.getNomesTemas();
   int[] recordesTema = Temas.getRecordesTemas();
   textFont(fonteTexto);
@@ -615,12 +475,11 @@ void desenharRecorde() {
     fill(c);
     text(nomes[i] + ": " + nf(recordesTema[i], 5), width/2, 310 + i * 28);
   }
-
   btnMenu.desenhar();
 }
 
 // ============================================================
-//  PARTÍCULAS (comemoração)
+//  PARTÍCULAS
 // ============================================================
 void inicializarParticulas() {
   for (int i = 0; i < particulas_x.length; i++) {
@@ -635,24 +494,21 @@ void lancarParticulas() {
   timerParticulas = millis();
   color[] cores = {COR_DESTAQUE, COR_ACERTO, color(255, 100, 100), color(100, 150, 255), color(255, 150, 50)};
   for (int i = 0; i < particulas_x.length; i++) {
-    particulas_x[i] = random(100, width - 100);
-    particulas_y[i] = random(100, 400);
+    particulas_x[i]  = random(100, width - 100);
+    particulas_y[i]  = random(100, 400);
     particulas_vx[i] = random(-3, 3);
     particulas_vy[i] = random(-5, -1);
     particulas_alpha[i] = 255;
-    particulas_cor[i] = cores[(int)random(cores.length)];
+    particulas_cor[i]   = cores[(int)random(cores.length)];
   }
 }
 
 void atualizarParticulas() {
   if (!mostrarParticulas) return;
-  if (millis() - timerParticulas > 3000) {
-    mostrarParticulas = false;
-    return;
-  }
+  if (millis() - timerParticulas > 3000) { mostrarParticulas = false; return; }
   for (int i = 0; i < particulas_x.length; i++) {
-    particulas_x[i] += particulas_vx[i];
-    particulas_y[i] += particulas_vy[i];
+    particulas_x[i]  += particulas_vx[i];
+    particulas_y[i]  += particulas_vy[i];
     particulas_vy[i] += 0.15;
     particulas_alpha[i] = max(0, particulas_alpha[i] - 2);
   }
@@ -669,21 +525,14 @@ void desenharParticulas() {
 }
 
 // ============================================================
-//  SACUDIR (erro)
+//  SACUDIR
 // ============================================================
-void iniciarSacudir() {
-  sacudindo = true;
-  timerSacudir = millis();
-}
+void iniciarSacudir() { sacudindo = true; timerSacudir = millis(); }
 
 void atualizarSacudir() {
   if (!sacudindo) return;
   int t = millis() - timerSacudir;
-  if (t > 500) {
-    sacudindo = false;
-    sacudirX = 0;
-    return;
-  }
+  if (t > 500) { sacudindo = false; sacudirX = 0; return; }
   sacudirX = sin(t * 0.1) * 8 * (1 - t / 500.0);
 }
 
@@ -699,10 +548,7 @@ void atualizarFade() {
   if (alphaTransicao <= 0) fadeIn = false;
 }
 
-void iniciarFade() {
-  fadeIn = true;
-  alphaTransicao = 255;
-}
+void iniciarFade() { fadeIn = true; alphaTransicao = 255; }
 
 // ============================================================
 //  MOUSE
@@ -720,91 +566,54 @@ void mousePressed() {
 
 void cliqueMenu() {
   Botao btnJogar = new Botao(width/2 - 120, 370, 240, 55, "", COR_ACERTO, color(255));
-  Botao btnRec = new Botao(width/2 - 120, 440, 240, 55, "", COR_DESTAQUE, color(20));
-  if (btnJogar.clicado()) {
-    estadoAtual = TELA_TEMA;
-    iniciarFade();
-  }
-  if (btnRec.clicado()) {
-    estadoAtual = TELA_RECORDE;
-    iniciarFade();
-  }
+  Botao btnRec   = new Botao(width/2 - 120, 440, 240, 55, "", COR_DESTAQUE, color(20));
+  if (btnJogar.clicado()) { estadoAtual = TELA_TEMA;    iniciarFade(); }
+  if (btnRec.clicado())   { estadoAtual = TELA_RECORDE; iniciarFade(); }
 }
 
 void cliqueTema() {
   for (int i = 0; i < botoesTema.length; i++) {
-    if (botoesTema[i].clicado()) {
-      temaSelecionado = i;
-      iniciarJogo();
-      return;
-    }
+    if (botoesTema[i].clicado()) { temaSelecionado = i; iniciarJogo(); return; }
   }
-  if (btnMenu.clicado()) {
-    estadoAtual = TELA_MENU;
-    iniciarFade();
-  }
+  if (btnMenu.clicado()) { estadoAtual = TELA_MENU; iniciarFade(); }
 }
 
 void cliqueJogo() {
-  // Teclado virtual
   String linhas = "QWERTYUIOPASDFGHJKLZXCVBNM";
   int[] tamLinhas = {10, 9, 7};
   int idx = 0;
   int bw = 44, bh = 38, gap = 4;
   int ky = 380;
-
   for (int linha = 0; linha < 3; linha++) {
     int tam = tamLinhas[linha];
     int totalW = tam * (bw + gap) - gap;
     int kx = (width - totalW) / 2;
-
     for (int col = 0; col < tam && idx < 26; col++) {
       char letra = linhas.charAt(idx);
       int bx = kx + col * (bw + gap);
       if (mouseX > bx && mouseX < bx + bw && mouseY > ky && mouseY < ky + bh) {
-        processarLetra(letra);
-        return;
+        processarLetra(letra); return;
       }
       idx++;
     }
     ky += bh + gap + 2;
   }
-
-  if (btnDica.clicado() && !usouDica) {
-    usouDica = true;
-    pontuacao = max(0, pontuacao - 50);
-  }
-  if (btnMenu.clicado()) {
-    voltarMenu();
-  }
+  if (btnDica.clicado() && !usouDica) { usouDica = true; pontuacao = max(0, pontuacao - 50); }
+  if (btnMenu.clicado()) voltarMenu();
 }
 
 void cliqueVitoria() {
-  if (btnProxima.clicado()) {
-    estadoAtual = TELA_TEMA;
-    iniciarFade();
-  }
-  if (btnMenu.clicado()) {
-    voltarMenu();
-  }
+  if (btnProxima.clicado()) { estadoAtual = TELA_TEMA; iniciarFade(); }
+  if (btnMenu.clicado()) voltarMenu();
 }
 
 void cliqueDerrota() {
-  if (btnJogarNovamente.clicado()) {
-    pontuacao = 0;
-    rodada = 1;
-    estadoAtual = TELA_TEMA;
-    iniciarFade();
-  }
-  if (btnMenu.clicado()) {
-    voltarMenu();
-  }
+  if (btnJogarNovamente.clicado()) { pontuacao = 0; rodada = 1; estadoAtual = TELA_TEMA; iniciarFade(); }
+  if (btnMenu.clicado()) voltarMenu();
 }
 
 void cliqueRecorde() {
-  if (btnMenu.clicado()) {
-    voltarMenu();
-  }
+  if (btnMenu.clicado()) voltarMenu();
 }
 
 // ============================================================
@@ -838,7 +647,6 @@ void iniciarJogo() {
 
 void processarLetra(char letra) {
   if (letrasErradas.contains(letra) || letrasCorretas.contains(letra)) return;
-
   boolean acertou = false;
   for (int i = 0; i < palavraSecreta.length(); i++) {
     if (palavraSecreta.charAt(i) == letra) {
@@ -846,7 +654,6 @@ void processarLetra(char letra) {
       acertou = true;
     }
   }
-
   if (acertou) {
     letrasCorretas.add(letra);
     verificarVitoria();
@@ -864,9 +671,7 @@ void processarLetra(char letra) {
 }
 
 void verificarVitoria() {
-  for (char c : letrasReveladas) {
-    if (c == '_') return;
-  }
+  for (char c : letrasReveladas) { if (c == '_') return; }
   tempoFinal = (millis() - tempoInicio) / 1000;
   int pts = calcularPontos();
   pontuacao += pts;
@@ -879,10 +684,10 @@ void verificarVitoria() {
 }
 
 int calcularPontos() {
-  int base = 100;
+  int base       = 100;
   int bonus_erros = (MAX_ERROS - erros) * 20;
   int bonus_tempo = max(0, 60 - tempoFinal) * 2;
-  int bonus_dica = usouDica ? 0 : 30;
+  int bonus_dica  = usouDica ? 0 : 30;
   return base + bonus_erros + bonus_tempo + bonus_dica;
 }
 
@@ -908,21 +713,24 @@ void inicializarBotoes() {
   int totalW = cols * bw + (cols - 1) * gap;
   int startX = (width - totalW) / 2;
   int startY = 180;
+  color[] temasCores = {
+    color(200, 80, 80),  color(80, 160, 200), color(80, 180, 100),
+    color(200, 150, 50), color(140, 80, 200), color(200, 100, 160)
+  };
   for (int i = 0; i < nomes.length; i++) {
     int col = i % cols;
     int row = i / cols;
-    color[] temasCores = {
-      color(200, 80, 80), color(80, 160, 200), color(80, 180, 100),
-      color(200, 150, 50), color(140, 80, 200), color(200, 100, 160)
-    };
-    botoesTema[i] = new Botao(startX + col * (bw + gap), startY + row * (bh + gap), bw, bh,
-                              nomes[i], temasCores[i % temasCores.length], color(255));
+    botoesTema[i] = new Botao(
+      startX + col * (bw + gap),
+      startY + row * (bh + gap),
+      bw, bh, nomes[i],
+      temasCores[i % temasCores.length], color(255)
+    );
   }
-
-  btnDica  = new Botao(420, 215, 180, 38, "💡 Dica (-50pts)", color(80, 80, 30), COR_DESTAQUE);
-  btnMenu  = new Botao(width/2 - 90, 520, 180, 45, "◀ Menu", color(50, 50, 80), COR_TEXTO);
-  btnProxima = new Botao(width/2 - 120, 360, 240, 50, "▶ Próxima Palavra", COR_ACERTO, color(10));
-  btnJogarNovamente = new Botao(width/2 - 120, 480, 240, 50, "↺ Jogar Novamente", COR_DESTAQUE, color(10));
+  btnDica           = new Botao(420, 215, 180, 38, "Dica (-50pts)", color(80, 80, 30), COR_DESTAQUE);
+  btnMenu           = new Botao(width/2 - 90, 520, 180, 45, "Menu", color(50, 50, 80), COR_TEXTO);
+  btnProxima        = new Botao(width/2 - 120, 360, 240, 50, "Proxima Palavra", COR_ACERTO, color(10));
+  btnJogarNovamente = new Botao(width/2 - 120, 480, 240, 50, "Jogar Novamente", COR_DESTAQUE, color(10));
 }
 
 // ============================================================
@@ -943,20 +751,18 @@ class Botao {
   void desenhar() {
     boolean hover = mouseX > x && mouseX < x + w && mouseY > y && mouseY < y + h;
     float brilho = hover ? 40 : 0;
-
-    // Sombra
     fill(0, 0, 0, 80);
     noStroke();
     rect(x + 3, y + 3, w, h, 10);
-
-    // Corpo
-    fill(min(255, red(corFundo) + brilho), min(255, green(corFundo) + brilho), min(255, blue(corFundo) + brilho));
+    fill(
+      min(255, red(corFundo)   + brilho),
+      min(255, green(corFundo) + brilho),
+      min(255, blue(corFundo)  + brilho)
+    );
     stroke(corTexto);
     strokeWeight(hover ? 2 : 1);
     rect(x, y, w, h, 10);
     noStroke();
-
-    // Texto
     textFont(fonteTexto);
     textAlign(CENTER, CENTER);
     fill(corTexto);
